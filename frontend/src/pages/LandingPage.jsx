@@ -1036,6 +1036,7 @@ export default function LandingPage() {
       <AudienceSection />
       <ContactSection />
       <Footer />
+      <FloatingJourneyBar scrollProgress={scrollProgress} />
       <DemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
     </div>
   );
