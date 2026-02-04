@@ -157,36 +157,17 @@ const KidCharacter = ({ className = "", waving = false }) => (
   </svg>
 );
 
-// Animated Journey Scene - Interactive on hover
-const JourneyScene = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [animationProgress, setAnimationProgress] = useState(0);
-
-  useEffect(() => {
-    if (isHovered) {
-      const interval = setInterval(() => {
-        setAnimationProgress((prev) => {
-          if (prev >= 1) return 0;
-          return prev + 0.02;
-        });
-      }, 50);
-      return () => clearInterval(interval);
-    } else {
-      setAnimationProgress(0);
-    }
-  }, [isHovered]);
-
-  const busPosition = animationProgress * 70;
-  const kidVisible = animationProgress < 0.15;
-  const kidBoarding = animationProgress >= 0.1 && animationProgress < 0.2;
-  const busMoving = animationProgress >= 0.15;
+// Animated Journey Scene - Scroll-based animation
+const JourneyScene = ({ scrollProgress }) => {
+  // Map scroll progress to animation phases
+  const busPosition = scrollProgress * 75; // Bus moves from 0% to 75% of scene width
+  const kidVisible = scrollProgress < 0.12;
+  const kidBoarding = scrollProgress >= 0.08 && scrollProgress < 0.15;
+  const busMoving = scrollProgress >= 0.1;
+  const arrivedAtSchool = scrollProgress >= 0.85;
   
   return (
-    <div 
-      className="relative w-full h-[400px] overflow-hidden rounded-3xl bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23] cursor-pointer group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="relative w-full h-[400px] overflow-hidden rounded-3xl bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23]">
       {/* Stars */}
       <div className="absolute inset-0">
         {[...Array(30)].map((_, i) => (
