@@ -6,7 +6,7 @@ import LandingPage from "@/pages/LandingPage";
 function App() {
   return (
     <div className="App">
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-center" richColors theme="dark" />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
