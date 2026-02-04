@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { 
@@ -17,6 +17,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+// Lazy load the 3D experience
+const Journey3DExperience = lazy(() => import("@/components/Journey3DExperience"));
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_parentpeace/artifacts/42vugmbi_Untitled%20design.png";
@@ -40,8 +43,8 @@ const useReveal = () => {
   return [ref, isVisible];
 };
 
-// Navbar
-const Navbar = ({ onRequestDemo }) => {
+// Navbar - now fixed and always visible
+const Navbar = ({ onRequestDemo, isTransparent = true }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -58,15 +61,15 @@ const Navbar = ({ onRequestDemo }) => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "glass py-3" : "bg-transparent py-6"
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
+        isScrolled || !isTransparent ? "glass py-3" : "bg-transparent py-6"
       }`}
       data-testid="navbar"
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <a href="/" className="flex items-center gap-3" data-testid="logo">
           <img src={LOGO_URL} alt="Where Is My Kid" className="h-12 w-auto" />
-          <span className="font-bold text-xl hidden sm:block">Where Is My Kid</span>
+          <span className="font-bold text-xl hidden sm:block text-white drop-shadow-lg">Where Is My Kid</span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -74,7 +77,7 @@ const Navbar = ({ onRequestDemo }) => {
             <button
               key={item}
               onClick={() => scrollTo(item)}
-              className="text-sm text-gray-400 hover:text-white transition-colors capitalize"
+              className="text-sm text-white/80 hover:text-white transition-colors capitalize drop-shadow"
               data-testid={`nav-${item}`}
             >
               {item.replace("-", " ")}
@@ -85,7 +88,7 @@ const Navbar = ({ onRequestDemo }) => {
         <div className="hidden md:flex items-center gap-4">
           <button 
             onClick={() => scrollTo("contact")}
-            className="text-sm text-gray-400 hover:text-white transition-colors"
+            className="text-sm text-white/80 hover:text-white transition-colors drop-shadow"
           >
             Contact Sales
           </button>
@@ -99,7 +102,7 @@ const Navbar = ({ onRequestDemo }) => {
         </div>
 
         <button 
-          className="md:hidden p-2" 
+          className="md:hidden p-2 text-white" 
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           data-testid="mobile-menu-btn"
         >
@@ -113,7 +116,7 @@ const Navbar = ({ onRequestDemo }) => {
             <button
               key={item}
               onClick={() => scrollTo(item)}
-              className="block w-full text-left py-3 px-4 text-gray-300 hover:text-white capitalize"
+              className="block w-full text-left py-3 px-4 text-white/80 hover:text-white capitalize"
             >
               {item.replace("-", " ")}
             </button>
@@ -130,162 +133,6 @@ const Navbar = ({ onRequestDemo }) => {
   );
 };
 
-// Hero Section
-const HeroSection = ({ onRequestDemo }) => {
-  return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden" data-testid="hero-section">
-      {/* Background Effects */}
-      <div className="absolute inset-0 grid-pattern" />
-      <div className="glow-orb w-[600px] h-[600px] bg-[#3B9FD8] top-[-200px] right-[-200px]" />
-      <div className="glow-orb w-[400px] h-[400px] bg-[#FFC107] bottom-[-100px] left-[-100px]" />
-      
-      <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Content */}
-          <div className="text-center lg:text-left">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-8">
-              From Bus Stops to Classrooms —{" "}
-              <span className="gradient-text">Stay Informed</span>
-            </h1>
-
-            <p className="text-xl text-gray-400 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
-              A complete school safety and student visibility platform. 
-              Know where your child is, every step of the way.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button 
-                onClick={onRequestDemo}
-                className="btn-primary text-lg flex items-center justify-center gap-2"
-                data-testid="hero-demo-btn"
-              >
-                <Play className="w-5 h-5" /> Request a Demo
-              </button>
-              <button 
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="btn-secondary text-lg"
-                data-testid="hero-contact-btn"
-              >
-                Contact Sales
-              </button>
-            </div>
-
-            <div className="flex items-center gap-8 mt-12 justify-center lg:justify-start">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-sm text-gray-500">Real-time Tracking</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Secure & Private</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right - Phone Mockup */}
-          <div className="relative flex justify-center">
-            <div className="phone-mockup w-[300px] animate-float" data-testid="phone-mockup">
-              <div className="phone-screen">
-                <div className="phone-notch" />
-                <div className="p-5 h-[520px] bg-gradient-to-b from-gray-50 to-white">
-                  {/* App Header */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div>
-                      <p className="text-[10px] text-gray-400">Good Morning</p>
-                      <p className="text-sm font-semibold text-gray-900">Sarah's Mom</p>
-                    </div>
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Bell className="w-4 h-4 text-gray-600" />
-                    </div>
-                  </div>
-
-                  {/* Status Card */}
-                  <div className="bg-gradient-to-br from-[#3B9FD8] to-[#2A8AC0] rounded-2xl p-4 text-white mb-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                        <Bus className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] opacity-80">Sarah is on</p>
-                        <p className="text-sm font-semibold">Bus #42 - Route A</p>
-                      </div>
-                    </div>
-                    <div className="bg-white/20 rounded-xl p-3">
-                      <div className="flex justify-between text-xs mb-2">
-                        <span>ETA to School</span>
-                        <span className="font-semibold">12 mins</span>
-                      </div>
-                      <div className="w-full bg-white/30 rounded-full h-1.5">
-                        <div className="bg-white rounded-full h-1.5 w-3/4" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-green-50 rounded-xl p-3">
-                      <p className="text-[10px] text-gray-500">Boarded</p>
-                      <p className="text-sm font-semibold text-green-600">8:15 AM</p>
-                    </div>
-                    <div className="bg-blue-50 rounded-xl p-3">
-                      <p className="text-[10px] text-gray-500">Attendance</p>
-                      <p className="text-sm font-semibold text-blue-600">Present</p>
-                    </div>
-                  </div>
-
-                  {/* Schedule */}
-                  <div className="bg-gray-50 rounded-xl p-3">
-                    <p className="text-[10px] text-gray-500 mb-2">Today's Schedule</p>
-                    <div className="space-y-2">
-                      {["Mathematics • 9:00", "Science • 10:30", "English • 12:00"].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs text-gray-600">
-                          <span>{item.split(" • ")[0]}</span>
-                          <span className="text-gray-400">{item.split(" • ")[1]}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating Cards */}
-            <div className="absolute -top-4 -right-4 glass rounded-2xl p-4 animate-float-delayed">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-green-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Safe Arrival</p>
-                  <p className="text-xs text-gray-500">School Gate</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute -bottom-4 -left-8 glass rounded-2xl p-4 animate-float">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#FFC107]/20 rounded-xl flex items-center justify-center">
-                  <Bell className="w-5 h-5 text-[#FFC107]" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">New Alert</p>
-                  <p className="text-xs text-gray-500">Exam Tomorrow</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span className="text-sm text-gray-500">Scroll to explore</span>
-        <ChevronDown className="w-5 h-5 text-gray-500 animate-bounce" />
-      </div>
-    </section>
-  );
-};
-
 // Problem Section
 const ProblemSection = () => {
   const [ref, isVisible] = useReveal();
@@ -297,14 +144,14 @@ const ProblemSection = () => {
   ];
 
   return (
-    <section className="py-32 relative" data-testid="problem-section">
+    <section className="py-32 relative bg-black" data-testid="problem-section">
       <div className="max-w-7xl mx-auto px-6">
         <div ref={ref} className={`reveal ${isVisible ? "visible" : ""}`}>
           <div className="text-center mb-20">
             <span className="text-sm font-semibold tracking-wider uppercase text-[#3B9FD8] mb-4 block">
               The Challenge
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white">
               Why Schools Struggle <span className="gradient-text">Today</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -322,7 +169,7 @@ const ProblemSection = () => {
                 <div className={`w-16 h-16 ${item.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                   <item.icon className={`w-8 h-8 ${item.color}`} />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
+                <h3 className="text-2xl font-bold mb-3 text-white">{item.title}</h3>
                 <p className="text-gray-400 text-lg">{item.desc}</p>
               </div>
             ))}
@@ -363,7 +210,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="py-32 relative" data-testid="features-section">
+    <section id="features" className="py-32 relative bg-black" data-testid="features-section">
       <div className="glow-orb w-[600px] h-[600px] bg-[#3B9FD8] top-1/2 left-[-300px]" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -372,7 +219,7 @@ const FeaturesSection = () => {
             <span className="text-sm font-semibold tracking-wider uppercase text-[#3B9FD8] mb-4 block">
               Features
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white">
               Everything in <span className="gradient-text">One Platform</span>
             </h2>
           </div>
@@ -387,7 +234,7 @@ const FeaturesSection = () => {
                 <div className={`${f.size === "large" ? "w-20 h-20" : "w-14 h-14"} bg-gradient-to-br ${f.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg`}>
                   <f.icon className={`${f.size === "large" ? "w-10 h-10" : "w-7 h-7"} text-white`} />
                 </div>
-                <h3 className={`${f.size === "large" ? "text-3xl" : "text-xl"} font-bold mb-3`}>{f.title}</h3>
+                <h3 className={`${f.size === "large" ? "text-3xl" : "text-xl"} font-bold mb-3 text-white`}>{f.title}</h3>
                 <p className={`text-gray-400 ${f.size === "large" ? "text-lg" : ""}`}>{f.desc}</p>
                 
                 {f.size === "large" && (
@@ -416,14 +263,14 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-32 relative" data-testid="how-it-works-section">
+    <section id="how-it-works" className="py-32 relative bg-black" data-testid="how-it-works-section">
       <div className="max-w-7xl mx-auto px-6">
         <div ref={ref} className={`reveal ${isVisible ? "visible" : ""}`}>
           <div className="text-center mb-20">
             <span className="text-sm font-semibold tracking-wider uppercase text-[#FFC107] mb-4 block">
               How It Works
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white">
               Simple <span className="gradient-text-gold">3-Step</span> Process
             </h2>
           </div>
@@ -438,7 +285,7 @@ const HowItWorksSection = () => {
                     <step.icon className="w-12 h-12 text-white" />
                   </div>
                   
-                  <h3 className="text-2xl font-bold mb-4 relative z-10">{step.title}</h3>
+                  <h3 className="text-2xl font-bold mb-4 relative z-10 text-white">{step.title}</h3>
                   <p className="text-gray-400 relative z-10">{step.desc}</p>
                 </div>
                 
@@ -468,7 +315,7 @@ const BenefitsSection = () => {
   ];
 
   return (
-    <section id="benefits" className="py-32 relative" data-testid="benefits-section">
+    <section id="benefits" className="py-32 relative bg-black" data-testid="benefits-section">
       <div className="glow-orb w-[500px] h-[500px] bg-[#FFC107] bottom-0 right-[-200px]" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -477,7 +324,7 @@ const BenefitsSection = () => {
             <span className="text-sm font-semibold tracking-wider uppercase text-green-400 mb-4 block">
               Benefits
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white">
               Why Schools <span className="text-green-400">Choose Us</span>
             </h2>
           </div>
@@ -492,7 +339,7 @@ const BenefitsSection = () => {
                 <div className={`w-16 h-16 bg-gradient-to-br ${b.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
                   <b.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{b.title}</h3>
+                <h3 className="text-xl font-bold mb-3 text-white">{b.title}</h3>
                 <p className="text-gray-400">{b.desc}</p>
               </div>
             ))}
@@ -515,14 +362,14 @@ const AudienceSection = () => {
   ];
 
   return (
-    <section className="py-32 relative" data-testid="audience-section">
+    <section className="py-32 relative bg-black" data-testid="audience-section">
       <div className="max-w-7xl mx-auto px-6">
         <div ref={ref} className={`reveal ${isVisible ? "visible" : ""}`}>
           <div className="text-center mb-20">
             <span className="text-sm font-semibold tracking-wider uppercase text-purple-400 mb-4 block">
               Who It's For
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
               Built for <span className="text-purple-400">Everyone</span>
             </h2>
           </div>
@@ -537,7 +384,7 @@ const AudienceSection = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
                   <a.icon className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{a.title}</h3>
+                <h3 className="text-xl font-bold mb-2 text-white">{a.title}</h3>
                 <p className="text-gray-400 text-sm">{a.desc}</p>
               </div>
             ))}
@@ -576,7 +423,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-32 relative" data-testid="contact-section">
+    <section id="contact" className="py-32 relative bg-black" data-testid="contact-section">
       <div className="glow-orb w-[600px] h-[600px] bg-[#3B9FD8] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       
       <div className="max-w-4xl mx-auto px-6 relative z-10">
@@ -585,7 +432,7 @@ const ContactSection = () => {
             <span className="text-sm font-semibold tracking-wider uppercase text-[#3B9FD8] mb-4 block">
               Get Started
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white">
               Book a <span className="gradient-text">Demo</span> Today
             </h2>
             <p className="text-xl text-gray-400">
@@ -601,7 +448,7 @@ const ContactSection = () => {
                   required
                   value={formData.school_name}
                   onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
-                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg text-white"
                   placeholder="Enter school name"
                   data-testid="input-school"
                 />
@@ -612,7 +459,7 @@ const ContactSection = () => {
                   required
                   value={formData.contact_person}
                   onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
-                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg text-white"
                   placeholder="Your name"
                   data-testid="input-person"
                 />
@@ -624,7 +471,7 @@ const ContactSection = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg text-white"
                   placeholder="email@school.com"
                   data-testid="input-email"
                 />
@@ -635,7 +482,7 @@ const ContactSection = () => {
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg text-white"
                   placeholder="+91 XXXXX XXXXX"
                   data-testid="input-phone"
                 />
@@ -646,7 +493,7 @@ const ContactSection = () => {
               <Textarea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="bg-white/5 border-white/10 rounded-xl min-h-[140px] text-lg"
+                className="bg-white/5 border-white/10 rounded-xl min-h-[140px] text-lg text-white"
                 placeholder="Tell us about your school's needs..."
                 data-testid="input-message"
               />
@@ -678,12 +525,12 @@ const ContactSection = () => {
 // Footer
 const Footer = () => {
   return (
-    <footer className="py-16 border-t border-white/10" data-testid="footer">
+    <footer className="py-16 border-t border-white/10 bg-black" data-testid="footer">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <img src={LOGO_URL} alt="Where Is My Kid" className="h-12 w-auto" />
-            <span className="font-bold text-xl">Where Is My Kid</span>
+            <span className="font-bold text-xl text-white">Where Is My Kid</span>
           </div>
           
           <p className="text-gray-500 text-center">
@@ -729,7 +576,7 @@ const DemoModal = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-[#111] border-white/10 max-w-lg" data-testid="demo-modal" aria-describedby="demo-modal-desc">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center mb-4">
+          <DialogTitle className="text-2xl font-bold text-center mb-4 text-white">
             Request a <span className="gradient-text">Demo</span>
           </DialogTitle>
           <p id="demo-modal-desc" className="sr-only">Fill out the form to request a demo</p>
@@ -740,7 +587,7 @@ const DemoModal = ({ isOpen, onClose }) => {
             required
             value={formData.school_name}
             onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
-            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            className="bg-white/5 border-white/10 h-14 rounded-xl text-white"
             placeholder="School Name *"
             data-testid="modal-school"
           />
@@ -748,7 +595,7 @@ const DemoModal = ({ isOpen, onClose }) => {
             required
             value={formData.contact_person}
             onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
-            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            className="bg-white/5 border-white/10 h-14 rounded-xl text-white"
             placeholder="Your Name *"
             data-testid="modal-person"
           />
@@ -757,7 +604,7 @@ const DemoModal = ({ isOpen, onClose }) => {
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            className="bg-white/5 border-white/10 h-14 rounded-xl text-white"
             placeholder="Email *"
             data-testid="modal-email"
           />
@@ -765,7 +612,7 @@ const DemoModal = ({ isOpen, onClose }) => {
             required
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            className="bg-white/5 border-white/10 h-14 rounded-xl text-white"
             placeholder="Phone *"
             data-testid="modal-phone"
           />
@@ -783,21 +630,57 @@ const DemoModal = ({ isOpen, onClose }) => {
   );
 };
 
+// 3D Loading fallback
+const Journey3DFallback = () => (
+  <div className="min-h-screen bg-gradient-to-b from-[#87CEEB] to-[#3B9FD8] flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4" />
+      <p className="text-white text-lg">Loading 3D Experience...</p>
+    </div>
+  </div>
+);
+
 // Main Landing Page
 export default function LandingPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [show3DExperience, setShow3DExperience] = useState(true);
+  const [journeyComplete, setJourneyComplete] = useState(false);
+
+  const handleSkipAnimation = () => {
+    setShow3DExperience(false);
+    // Scroll to content
+    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleJourneyComplete = () => {
+    setJourneyComplete(true);
+  };
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden" data-testid="landing-page">
-      <Navbar onRequestDemo={() => setIsDemoModalOpen(true)} />
-      <HeroSection onRequestDemo={() => setIsDemoModalOpen(true)} />
-      <ProblemSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <BenefitsSection />
-      <AudienceSection />
-      <ContactSection />
-      <Footer />
+      <Navbar onRequestDemo={() => setIsDemoModalOpen(true)} isTransparent={show3DExperience} />
+      
+      {/* 3D Journey Experience */}
+      {show3DExperience && (
+        <Suspense fallback={<Journey3DFallback />}>
+          <Journey3DExperience 
+            onComplete={handleJourneyComplete}
+            onSkip={handleSkipAnimation}
+          />
+        </Suspense>
+      )}
+
+      {/* Main Content */}
+      <div id="main-content">
+        <ProblemSection />
+        <FeaturesSection />
+        <HowItWorksSection />
+        <BenefitsSection />
+        <AudienceSection />
+        <ContactSection />
+        <Footer />
+      </div>
+      
       <DemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
     </div>
   );
