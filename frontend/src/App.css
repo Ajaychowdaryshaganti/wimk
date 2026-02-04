@@ -1,34 +1,188 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Main App Styles - Where Is My Kid Landing Page */
+
+/* Hero section background pattern */
+.hero-pattern {
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(59, 159, 216, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 193, 7, 0.06) 0%, transparent 50%);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+/* Feature card hover effect */
+.feature-card {
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Smooth section transitions */
+section {
+    position: relative;
+}
+
+/* Button glow effect */
+.btn-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-glow::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+}
+
+.btn-glow:hover::after {
+    left: 100%;
+}
+
+/* Floating animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse ring animation */
+@keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+.pulse-ring {
+    animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #3B9FD8 0%, #2A8AC0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Trust logos opacity */
+.trust-logo {
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.trust-logo:hover {
+    opacity: 0.8;
+}
+
+/* Step connector line */
+.step-connector {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #3B9FD8, #e2e8f0);
+}
+
+/* Card shine effect */
+.card-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.card-shine:hover::before {
+    left: 100%;
+}
+
+/* Responsive typography adjustments */
+@media (max-width: 640px) {
+    .hero-title {
+        font-size: 2.5rem;
+        line-height: 1.2;
     }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Mobile menu animation */
+.mobile-menu-enter {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
-.App-link {
-    color: #61dafb;
+.mobile-menu-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.2s ease-out;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+/* Bento grid responsive */
+@media (min-width: 768px) {
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
     }
-    to {
-        transform: rotate(360deg);
+    
+    .bento-large {
+        grid-column: span 6;
+        grid-row: span 2;
     }
+    
+    .bento-medium {
+        grid-column: span 6;
+    }
+    
+    .bento-small {
+        grid-column: span 4;
+    }
+}
+
+/* Dashboard mockup styles */
+.dashboard-mockup {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+/* Input focus states */
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #3B9FD8 !important;
+    box-shadow: 0 0 0 3px rgba(59, 159, 216, 0.1);
+}
+
+/* Scroll indicator animation */
+@keyframes scroll-indicator {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(8px); opacity: 0.5; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.scroll-indicator {
+    animation: scroll-indicator 2s ease-in-out infinite;
 }
