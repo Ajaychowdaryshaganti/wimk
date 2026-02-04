@@ -273,6 +273,65 @@ const JourneyScene = ({ scrollProgress }) => {
   );
 };
 
+// Floating Journey Progress Bar (Fixed at bottom)
+const FloatingJourneyBar = ({ scrollProgress }) => {
+  const arrivedAtSchool = scrollProgress >= 0.85;
+  
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none">
+      <div className="max-w-4xl mx-auto px-6 pb-6">
+        <div className="glass rounded-2xl p-4 pointer-events-auto">
+          <div className="flex items-center gap-4">
+            {/* Bus Stop */}
+            <div className={`flex items-center gap-2 ${scrollProgress < 0.15 ? "text-[#3B9FD8]" : "text-gray-500"}`}>
+              <div className="w-8 h-8 bg-[#3B9FD8]/20 rounded-lg flex items-center justify-center">
+                <Bus className="w-4 h-4" />
+              </div>
+              <span className="text-xs hidden sm:block">Bus Stop</span>
+            </div>
+            
+            {/* Progress Line with Bus */}
+            <div className="flex-1 relative">
+              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-[#3B9FD8] to-[#FFC107] rounded-full transition-all duration-300"
+                  style={{ width: `${scrollProgress * 100}%` }}
+                />
+              </div>
+              {/* Moving Bus Icon */}
+              <div 
+                className="absolute top-1/2 -translate-y-1/2 transition-all duration-300"
+                style={{ left: `calc(${scrollProgress * 100}% - 12px)` }}
+              >
+                <div className="w-6 h-6 bg-[#FFC107] rounded-lg flex items-center justify-center shadow-lg">
+                  <Bus className="w-3 h-3 text-black" />
+                </div>
+              </div>
+            </div>
+            
+            {/* School */}
+            <div className={`flex items-center gap-2 ${arrivedAtSchool ? "text-green-400" : "text-gray-500"}`}>
+              <span className="text-xs hidden sm:block">School</span>
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${arrivedAtSchool ? "bg-green-500/20" : "bg-white/10"}`}>
+                <Building className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+          
+          {/* Status Text */}
+          <p className="text-center text-xs text-gray-400 mt-2">
+            {scrollProgress < 0.1 && "Child waiting at bus stop..."}
+            {scrollProgress >= 0.1 && scrollProgress < 0.2 && "Boarding the bus..."}
+            {scrollProgress >= 0.2 && scrollProgress < 0.5 && "On the way to school..."}
+            {scrollProgress >= 0.5 && scrollProgress < 0.85 && "Almost there..."}
+            {scrollProgress >= 0.85 && "✓ Arrived safely at school!"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Navbar
 const Navbar = ({ onRequestDemo }) => {
   const [isScrolled, setIsScrolled] = useState(false);
