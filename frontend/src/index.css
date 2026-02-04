@@ -124,43 +124,33 @@ body {
 
 /* Floating Animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
 }
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
-.animate-float-delayed {
-  animation: float 6s ease-in-out infinite;
-  animation-delay: 2s;
+
+/* Twinkle Stars */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
 }
 
-/* Bus Animation */
-@keyframes bus-bounce {
-  0%, 100% { transform: translateY(0) rotate(-1deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-}
-.bus-bounce {
-  animation: bus-bounce 1s ease-in-out infinite;
-}
-
-/* Wheel Spin */
-@keyframes wheel-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.wheel-spin {
-  animation: wheel-spin 0.5s linear infinite;
-}
-
-/* Kid Wave */
-@keyframes kid-wave {
+/* Wave Animation for Kid */
+@keyframes wave {
   0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(15deg); }
-  75% { transform: rotate(-15deg); }
+  25% { transform: rotate(-30deg); }
+  75% { transform: rotate(20deg); }
 }
-.kid-wave {
-  animation: kid-wave 0.5s ease-in-out infinite;
+.animate-wave {
+  animation: wave 0.5s ease-in-out infinite;
+}
+
+/* Flag Wave */
+@keyframes flagWave {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.9); }
 }
 
 /* Pulse Glow */
