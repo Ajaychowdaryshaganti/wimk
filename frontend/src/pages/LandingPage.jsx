@@ -419,7 +419,7 @@ const HeroSection = ({ onRequestDemo, scrollProgress }) => {
 
             {/* Right - Journey Animation */}
             <div className="relative">
-              <JourneyScene />
+              <JourneyScene scrollProgress={scrollProgress} />
               
               {/* Floating Info Cards */}
               <div className="absolute -top-4 -right-4 glass rounded-2xl p-4 animate-float z-20">
