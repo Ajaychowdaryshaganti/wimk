@@ -4,8 +4,7 @@ import {
   Environment, 
   Text, 
   useProgress,
-  Html,
-  Float
+  Html
 } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -289,27 +288,33 @@ const Tree = ({ position, scale = 1 }) => {
 
 // Cloud
 const Cloud = ({ position }) => {
+  const ref = useRef();
+  
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    }
+  });
+
   return (
-    <Float speed={0.5} rotationIntensity={0} floatIntensity={0.5}>
-      <group position={position}>
-        <mesh>
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshStandardMaterial color="white" transparent opacity={0.9} />
-        </mesh>
-        <mesh position={[1, 0, 0]}>
-          <sphereGeometry args={[0.8, 16, 16]} />
-          <meshStandardMaterial color="white" transparent opacity={0.9} />
-        </mesh>
-        <mesh position={[-1, 0, 0]}>
-          <sphereGeometry args={[0.7, 16, 16]} />
-          <meshStandardMaterial color="white" transparent opacity={0.9} />
-        </mesh>
-        <mesh position={[0.5, 0.5, 0]}>
-          <sphereGeometry args={[0.6, 16, 16]} />
-          <meshStandardMaterial color="white" transparent opacity={0.9} />
-        </mesh>
-      </group>
-    </Float>
+    <group ref={ref} position={position}>
+      <mesh>
+        <sphereGeometry args={[1, 16, 16]} />
+        <meshStandardMaterial color="white" transparent opacity={0.9} />
+      </mesh>
+      <mesh position={[1, 0, 0]}>
+        <sphereGeometry args={[0.8, 16, 16]} />
+        <meshStandardMaterial color="white" transparent opacity={0.9} />
+      </mesh>
+      <mesh position={[-1, 0, 0]}>
+        <sphereGeometry args={[0.7, 16, 16]} />
+        <meshStandardMaterial color="white" transparent opacity={0.9} />
+      </mesh>
+      <mesh position={[0.5, 0.5, 0]}>
+        <sphereGeometry args={[0.6, 16, 16]} />
+        <meshStandardMaterial color="white" transparent opacity={0.9} />
+      </mesh>
+    </group>
   );
 };
 
