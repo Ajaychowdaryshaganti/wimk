@@ -355,14 +355,14 @@ const Navbar = ({ onRequestDemo }) => {
 // Hero Section with Journey Animation
 const HeroSection = ({ onRequestDemo, scrollProgress }) => {
   return (
-    <section className="relative min-h-[200vh] pt-20 overflow-hidden" data-testid="hero-section">
+    <section className="relative min-h-screen pt-20 overflow-hidden" data-testid="hero-section">
       {/* Background */}
       <div className="absolute inset-0 grid-pattern" />
       <div className="glow-orb w-[800px] h-[800px] bg-[#3B9FD8] top-[-300px] right-[-300px]" />
       <div className="glow-orb w-[600px] h-[600px] bg-[#FFC107] bottom-[20%] left-[-200px]" />
       
-      {/* Sticky Content */}
-      <div className="sticky top-0 min-h-screen flex items-center">
+      {/* Content */}
+      <div className="min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -440,8 +440,8 @@ const HeroSection = ({ onRequestDemo, scrollProgress }) => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-[55%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
-        <span className="text-sm text-gray-500">Scroll to see the journey</span>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
+        <span className="text-sm text-gray-500">Scroll to explore</span>
         <ChevronDown className="w-5 h-5 text-gray-500 animate-bounce" />
       </div>
     </section>
