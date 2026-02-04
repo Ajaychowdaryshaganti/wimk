@@ -238,30 +238,36 @@ const JourneyScene = ({ scrollProgress }) => {
 
       {/* School Building */}
       <div 
-        className="absolute bottom-20 right-8 transition-all duration-500"
+        className="absolute bottom-20 right-8 transition-all duration-300"
         style={{ 
-          opacity: animationProgress > 0.2 ? 1 : 0.3,
-          transform: `scale(${animationProgress > 0.25 ? 1.1 : 1})`,
+          opacity: scrollProgress > 0.3 ? 1 : 0.3,
+          transform: `scale(${arrivedAtSchool ? 1.15 : 1})`,
         }}
       >
         <SchoolBuilding className="w-24 h-20" />
+        {arrivedAtSchool && (
+          <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs px-3 py-1 rounded-full animate-bounce">
+            Safe! ✓
+          </div>
+        )}
       </div>
 
       {/* Journey Progress Text */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
-        <p className="text-sm text-white/60">
-          {!isHovered && "Hover to see the journey!"}
-          {isHovered && animationProgress < 0.1 && "Child waiting at bus stop..."}
-          {isHovered && animationProgress >= 0.1 && animationProgress < 0.2 && "Boarding the bus..."}
-          {isHovered && animationProgress >= 0.2 && animationProgress < 0.8 && "On the way to school..."}
-          {isHovered && animationProgress >= 0.8 && "Arriving at school safely!"}
+        <p className="text-sm text-white/80 font-medium">
+          {scrollProgress < 0.1 && "🚏 Child waiting at bus stop..."}
+          {scrollProgress >= 0.1 && scrollProgress < 0.2 && "🚌 Boarding the bus..."}
+          {scrollProgress >= 0.2 && scrollProgress < 0.5 && "🛣️ On the way to school..."}
+          {scrollProgress >= 0.5 && scrollProgress < 0.85 && "🏫 Almost there..."}
+          {scrollProgress >= 0.85 && "✅ Arrived at school safely!"}
         </p>
         <div className="w-48 h-2 bg-white/20 rounded-full mt-2 overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-[#3B9FD8] to-[#FFC107] rounded-full transition-all duration-100"
-            style={{ width: `${animationProgress * 100}%` }}
+            className="h-full bg-gradient-to-r from-[#3B9FD8] to-[#FFC107] rounded-full transition-all duration-300"
+            style={{ width: `${scrollProgress * 100}%` }}
           />
         </div>
+        <p className="text-xs text-white/40 mt-1">Scroll to follow the journey</p>
       </div>
     </div>
   );
