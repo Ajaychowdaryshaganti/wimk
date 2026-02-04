@@ -154,15 +154,36 @@ const KidCharacter = ({ className = "", waving = false }) => (
   </svg>
 );
 
-// Animated Journey Scene
-const JourneyScene = ({ progress }) => {
-  const busPosition = Math.min(progress * 3, 1) * 70; // 0 to 70%
-  const kidVisible = progress < 0.15;
-  const kidBoarding = progress >= 0.1 && progress < 0.2;
-  const busMoving = progress >= 0.15;
+// Animated Journey Scene - Interactive on hover
+const JourneyScene = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [animationProgress, setAnimationProgress] = useState(0);
+
+  useEffect(() => {
+    if (isHovered) {
+      const interval = setInterval(() => {
+        setAnimationProgress((prev) => {
+          if (prev >= 1) return 0;
+          return prev + 0.02;
+        });
+      }, 50);
+      return () => clearInterval(interval);
+    } else {
+      setAnimationProgress(0);
+    }
+  }, [isHovered]);
+
+  const busPosition = animationProgress * 70;
+  const kidVisible = animationProgress < 0.15;
+  const kidBoarding = animationProgress >= 0.1 && animationProgress < 0.2;
+  const busMoving = animationProgress >= 0.15;
   
   return (
-    <div className="relative w-full h-[400px] overflow-hidden rounded-3xl bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23]">
+    <div 
+      className="relative w-full h-[400px] overflow-hidden rounded-3xl bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23] cursor-pointer group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* Stars */}
       <div className="absolute inset-0">
         {[...Array(30)].map((_, i) => (
@@ -246,15 +267,16 @@ const JourneyScene = ({ progress }) => {
       {/* Journey Progress Text */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
         <p className="text-sm text-white/60">
-          {progress < 0.1 && "Child waiting at bus stop..."}
-          {progress >= 0.1 && progress < 0.2 && "Boarding the bus..."}
-          {progress >= 0.2 && progress < 0.3 && "On the way to school..."}
-          {progress >= 0.3 && "Arriving at school safely!"}
+          {!isHovered && "Hover to see the journey!"}
+          {isHovered && animationProgress < 0.1 && "Child waiting at bus stop..."}
+          {isHovered && animationProgress >= 0.1 && animationProgress < 0.2 && "Boarding the bus..."}
+          {isHovered && animationProgress >= 0.2 && animationProgress < 0.8 && "On the way to school..."}
+          {isHovered && animationProgress >= 0.8 && "Arriving at school safely!"}
         </p>
         <div className="w-48 h-2 bg-white/20 rounded-full mt-2 overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-[#3B9FD8] to-[#FFC107] rounded-full transition-all duration-300"
-            style={{ width: `${Math.min(progress * 3, 1) * 100}%` }}
+            className="h-full bg-gradient-to-r from-[#3B9FD8] to-[#FFC107] rounded-full transition-all duration-100"
+            style={{ width: `${animationProgress * 100}%` }}
           />
         </div>
       </div>
@@ -408,7 +430,7 @@ const HeroSection = ({ onRequestDemo, scrollProgress }) => {
 
             {/* Right - Journey Animation */}
             <div className="relative">
-              <JourneyScene progress={scrollProgress} />
+              <JourneyScene />
               
               {/* Floating Info Cards */}
               <div className="absolute -top-4 -right-4 glass rounded-2xl p-4 animate-float z-20">
@@ -953,12 +975,11 @@ const DemoModal = ({ isOpen, onClose }) => {
 // Main Landing Page
 export default function LandingPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const scrollProgress = useScrollProgress();
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden" data-testid="landing-page">
       <Navbar onRequestDemo={() => setIsDemoModalOpen(true)} />
-      <HeroSection onRequestDemo={() => setIsDemoModalOpen(true)} scrollProgress={scrollProgress} />
+      <HeroSection onRequestDemo={() => setIsDemoModalOpen(true)} />
       <ProblemSection />
       <FeaturesSection />
       <HowItWorksSection />
