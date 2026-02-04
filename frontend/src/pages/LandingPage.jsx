@@ -257,8 +257,8 @@ const JourneyScene = () => {
       <div 
         className="absolute bottom-20 right-8 transition-all duration-500"
         style={{ 
-          opacity: progress > 0.2 ? 1 : 0.3,
-          transform: `scale(${progress > 0.25 ? 1.1 : 1})`,
+          opacity: animationProgress > 0.2 ? 1 : 0.3,
+          transform: `scale(${animationProgress > 0.25 ? 1.1 : 1})`,
         }}
       >
         <SchoolBuilding className="w-24 h-20" />
