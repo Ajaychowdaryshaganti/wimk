@@ -5,7 +5,8 @@ import {
   MapPin, Shield, Bell, ChevronDown, Menu, X, CheckCircle2, 
   Smartphone, Users, Car, Calendar, FileText, ClipboardCheck,
   AlertTriangle, Lock, Eye, Play, ArrowRight, Phone, Mail,
-  Clock, UserCheck, Building, GraduationCap, Bus
+  Clock, UserCheck, Building, GraduationCap, Bus, Star,
+  Heart, Zap, Target, Award
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +19,9 @@ import {
 } from "@/components/ui/dialog";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_parentpeace/artifacts/42vugmbi_Untitled%20design.png";
 
-// Intersection Observer Hook for reveal animations
+// Intersection Observer Hook
 const useReveal = () => {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -27,24 +29,240 @@ const useReveal = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        if (entry.isIntersecting) setIsVisible(true);
       },
       { threshold: 0.1, rootMargin: "-50px" }
     );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
+    if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
   return [ref, isVisible];
 };
 
-// Navbar Component
+// Scroll Progress Hook
+const useScrollProgress = () => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(Math.min(scrollTop / docHeight, 1));
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return progress;
+};
+
+// SVG Bus Component
+const AnimatedBus = ({ className = "", isMoving = false }) => (
+  <svg viewBox="0 0 120 60" className={className}>
+    {/* Bus Body */}
+    <rect x="10" y="15" width="90" height="35" rx="8" fill="#FFC107" />
+    <rect x="15" y="20" width="80" height="25" rx="4" fill="#FFD54F" />
+    
+    {/* Windows */}
+    <rect x="20" y="22" width="15" height="12" rx="2" fill="#87CEEB" />
+    <rect x="40" y="22" width="15" height="12" rx="2" fill="#87CEEB" />
+    <rect x="60" y="22" width="15" height="12" rx="2" fill="#87CEEB" />
+    <rect x="80" y="22" width="12" height="12" rx="2" fill="#87CEEB" />
+    
+    {/* Kids in windows */}
+    <circle cx="27" cy="28" r="4" fill="#FFB6C1" />
+    <circle cx="47" cy="28" r="4" fill="#98D8C8" />
+    <circle cx="67" cy="28" r="4" fill="#DDA0DD" />
+    
+    {/* Wheels */}
+    <g className={isMoving ? "wheel-spin" : ""} style={{ transformOrigin: "30px 50px" }}>
+      <circle cx="30" cy="50" r="8" fill="#333" />
+      <circle cx="30" cy="50" r="4" fill="#666" />
+    </g>
+    <g className={isMoving ? "wheel-spin" : ""} style={{ transformOrigin: "85px 50px" }}>
+      <circle cx="85" cy="50" r="8" fill="#333" />
+      <circle cx="85" cy="50" r="4" fill="#666" />
+    </g>
+    
+    {/* Front light */}
+    <rect x="95" y="30" width="8" height="6" rx="2" fill="#FFF" />
+    
+    {/* Door */}
+    <rect x="12" y="25" width="6" height="20" rx="1" fill="#FF8C00" />
+  </svg>
+);
+
+// SVG School Building
+const SchoolBuilding = ({ className = "" }) => (
+  <svg viewBox="0 0 100 80" className={className}>
+    {/* Main Building */}
+    <rect x="10" y="30" width="80" height="45" fill="#E57373" />
+    <rect x="15" y="35" width="70" height="35" fill="#EF5350" />
+    
+    {/* Roof */}
+    <polygon points="50,5 5,30 95,30" fill="#C62828" />
+    
+    {/* Clock/Bell Tower */}
+    <rect x="40" y="10" width="20" height="20" fill="#FFEB3B" />
+    <circle cx="50" cy="20" r="6" fill="#FFF" stroke="#333" strokeWidth="1" />
+    
+    {/* Windows */}
+    <rect x="20" y="40" width="12" height="15" rx="1" fill="#BBDEFB" />
+    <rect x="44" y="40" width="12" height="15" rx="1" fill="#BBDEFB" />
+    <rect x="68" y="40" width="12" height="15" rx="1" fill="#BBDEFB" />
+    
+    {/* Door */}
+    <rect x="40" y="50" width="20" height="25" rx="2" fill="#5D4037" />
+    <circle cx="55" cy="62" r="2" fill="#FFD700" />
+    
+    {/* Flag */}
+    <line x1="50" y1="5" x2="50" y2="-10" stroke="#333" strokeWidth="2" />
+    <polygon points="50,-10 65,-5 50,0" fill="#4CAF50" />
+  </svg>
+);
+
+// SVG Kid Character
+const KidCharacter = ({ className = "", waving = false }) => (
+  <svg viewBox="0 0 40 60" className={className}>
+    {/* Body */}
+    <rect x="12" y="25" width="16" height="20" rx="3" fill="#3B9FD8" />
+    
+    {/* Head */}
+    <circle cx="20" cy="15" r="12" fill="#FFCC80" />
+    
+    {/* Hair */}
+    <ellipse cx="20" cy="8" rx="10" ry="6" fill="#5D4037" />
+    
+    {/* Eyes */}
+    <circle cx="16" cy="14" r="2" fill="#333" />
+    <circle cx="24" cy="14" r="2" fill="#333" />
+    
+    {/* Smile */}
+    <path d="M16,20 Q20,24 24,20" fill="none" stroke="#333" strokeWidth="1.5" />
+    
+    {/* Arms */}
+    <rect x="4" y="28" width="10" height="5" rx="2" fill="#FFCC80" className={waving ? "kid-wave" : ""} style={{ transformOrigin: "12px 30px" }} />
+    <rect x="26" y="28" width="10" height="5" rx="2" fill="#FFCC80" />
+    
+    {/* Legs */}
+    <rect x="14" y="43" width="5" height="12" rx="2" fill="#1565C0" />
+    <rect x="21" y="43" width="5" height="12" rx="2" fill="#1565C0" />
+    
+    {/* Backpack */}
+    <rect x="8" y="26" width="6" height="12" rx="2" fill="#FF7043" />
+  </svg>
+);
+
+// Animated Journey Scene
+const JourneyScene = ({ progress }) => {
+  const busPosition = Math.min(progress * 3, 1) * 70; // 0 to 70%
+  const kidVisible = progress < 0.15;
+  const kidBoarding = progress >= 0.1 && progress < 0.2;
+  const busMoving = progress >= 0.15;
+  
+  return (
+    <div className="relative w-full h-[400px] overflow-hidden rounded-3xl bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f0f23]">
+      {/* Stars */}
+      <div className="absolute inset-0">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full star"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 40}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              opacity: 0.5,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Moon */}
+      <div className="absolute top-8 right-12 w-16 h-16 bg-gradient-to-br from-[#FFF9C4] to-[#FFE082] rounded-full shadow-[0_0_40px_rgba(255,235,59,0.4)]" />
+
+      {/* Clouds */}
+      <div className="absolute top-16 left-[10%] cloud-float">
+        <div className="w-20 h-8 bg-white/10 rounded-full blur-sm" />
+      </div>
+      <div className="absolute top-24 left-[60%] cloud-float" style={{ animationDelay: "2s" }}>
+        <div className="w-16 h-6 bg-white/10 rounded-full blur-sm" />
+      </div>
+
+      {/* Ground/Road */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#2d5016] to-[#3d6b1e]" />
+      
+      {/* Road */}
+      <div 
+        className={`absolute bottom-12 left-0 right-0 h-12 bg-[#333] ${busMoving ? "road-animate" : ""}`}
+        style={{
+          backgroundImage: busMoving 
+            ? "repeating-linear-gradient(90deg, transparent, transparent 40px, #FFC107 40px, #FFC107 60px)"
+            : "repeating-linear-gradient(90deg, transparent, transparent 40px, #FFC107 40px, #FFC107 60px)",
+        }}
+      />
+
+      {/* Home/Bus Stop */}
+      <div className="absolute bottom-20 left-8">
+        <div className="w-4 h-20 bg-[#666]" /> {/* Pole */}
+        <div className="absolute -top-2 -left-3 w-10 h-8 bg-[#3B9FD8] rounded flex items-center justify-center">
+          <Bus className="w-5 h-5 text-white" />
+        </div>
+      </div>
+
+      {/* Kid at bus stop */}
+      {kidVisible && (
+        <div 
+          className={`absolute bottom-24 transition-all duration-500 ${kidBoarding ? "opacity-0 translate-x-8" : "opacity-100"}`}
+          style={{ left: "60px" }}
+        >
+          <KidCharacter className="w-12 h-18" waving={!kidBoarding} />
+        </div>
+      )}
+
+      {/* Bus */}
+      <div 
+        className={`absolute bottom-16 transition-all duration-1000 ease-out ${busMoving ? "bus-bounce" : ""}`}
+        style={{ 
+          left: `${5 + busPosition}%`,
+          transform: `scaleX(${progress > 0.1 ? 1 : -1})`,
+        }}
+      >
+        <AnimatedBus className="w-32 h-16" isMoving={busMoving} />
+      </div>
+
+      {/* School Building */}
+      <div 
+        className="absolute bottom-20 right-8 transition-all duration-500"
+        style={{ 
+          opacity: progress > 0.2 ? 1 : 0.3,
+          transform: `scale(${progress > 0.25 ? 1.1 : 1})`,
+        }}
+      >
+        <SchoolBuilding className="w-24 h-20" />
+      </div>
+
+      {/* Journey Progress Text */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
+        <p className="text-sm text-white/60">
+          {progress < 0.1 && "Child waiting at bus stop..."}
+          {progress >= 0.1 && progress < 0.2 && "Boarding the bus..."}
+          {progress >= 0.2 && progress < 0.3 && "On the way to school..."}
+          {progress >= 0.3 && "Arriving at school safely!"}
+        </p>
+        <div className="w-48 h-2 bg-white/20 rounded-full mt-2 overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-[#3B9FD8] to-[#FFC107] rounded-full transition-all duration-300"
+            style={{ width: `${Math.min(progress * 3, 1) * 100}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Navbar
 const Navbar = ({ onRequestDemo }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -69,12 +287,8 @@ const Navbar = ({ onRequestDemo }) => {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <a href="/" className="flex items-center gap-3" data-testid="logo">
-          <img 
-            src="https://customer-assets.emergentagent.com/job_parentpeace/artifacts/vd59z55h_wimk.png" 
-            alt="Where Is My Kid" 
-            className="h-10 w-auto"
-          />
-          <span className="font-bold text-lg hidden sm:block">Where Is My Kid</span>
+          <img src={LOGO_URL} alt="Where Is My Kid" className="h-12 w-auto" />
+          <span className="font-bold text-xl hidden sm:block">Where Is My Kid</span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -138,151 +352,86 @@ const Navbar = ({ onRequestDemo }) => {
   );
 };
 
-// Hero Section
-const HeroSection = ({ onRequestDemo }) => {
+// Hero Section with Journey Animation
+const HeroSection = ({ onRequestDemo, scrollProgress }) => {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden" data-testid="hero-section">
-      {/* Background Effects */}
+    <section className="relative min-h-[200vh] pt-20 overflow-hidden" data-testid="hero-section">
+      {/* Background */}
       <div className="absolute inset-0 grid-pattern" />
-      <div className="glow-orb w-[600px] h-[600px] bg-[#3B9FD8] top-[-200px] right-[-200px]" />
-      <div className="glow-orb w-[400px] h-[400px] bg-[#FFC107] bottom-[-100px] left-[-100px]" />
+      <div className="glow-orb w-[800px] h-[800px] bg-[#3B9FD8] top-[-300px] right-[-300px]" />
+      <div className="glow-orb w-[600px] h-[600px] bg-[#FFC107] bottom-[20%] left-[-200px]" />
       
-      <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Content */}
-          <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8">
-              <Shield className="w-4 h-4 text-[#3B9FD8]" />
-              <span className="text-sm text-gray-300">Trusted by 500+ Schools</span>
-            </div>
+      {/* Sticky Content */}
+      <div className="sticky top-0 min-h-screen flex items-center">
+        <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 w-full">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="text-center lg:text-left">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-8">
+                From Bus Stops to Classrooms —{" "}
+                <span className="gradient-text">Stay Informed</span>
+              </h1>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-8">
-              From Bus Stops to Classrooms —{" "}
-              <span className="gradient-text">Stay Informed</span>
-            </h1>
+              <p className="text-xl text-gray-400 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
+                A complete school safety and student visibility platform. 
+                Know where your child is, every step of the way.
+              </p>
 
-            <p className="text-xl text-gray-400 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
-              A complete school safety and student visibility platform. 
-              Know where your child is, every step of the way.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button 
-                onClick={onRequestDemo}
-                className="btn-primary text-lg flex items-center justify-center gap-2"
-                data-testid="hero-demo-btn"
-              >
-                <Play className="w-5 h-5" /> Request a Demo
-              </button>
-              <button 
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                className="btn-secondary text-lg"
-                data-testid="hero-contact-btn"
-              >
-                Contact Sales
-              </button>
-            </div>
-
-            <div className="flex items-center gap-8 mt-12 justify-center lg:justify-start">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-sm text-gray-500">Real-time Tracking</span>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <button 
+                  onClick={onRequestDemo}
+                  className="btn-primary text-lg flex items-center justify-center gap-2"
+                  data-testid="hero-demo-btn"
+                >
+                  <Play className="w-5 h-5" /> Request a Demo
+                </button>
+                <button 
+                  onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                  className="btn-secondary text-lg"
+                  data-testid="hero-contact-btn"
+                >
+                  Contact Sales
+                </button>
               </div>
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Secure & Private</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Right - Phone Mockup */}
-          <div className="relative flex justify-center">
-            <div className="phone-mockup w-[300px] animate-float" data-testid="phone-mockup">
-              <div className="phone-screen">
-                <div className="phone-notch" />
-                <div className="p-5 h-[520px] bg-gradient-to-b from-gray-50 to-white">
-                  {/* App Header */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div>
-                      <p className="text-[10px] text-gray-400">Good Morning</p>
-                      <p className="text-sm font-semibold text-gray-900">Sarah's Mom</p>
-                    </div>
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Bell className="w-4 h-4 text-gray-600" />
-                    </div>
-                  </div>
-
-                  {/* Status Card */}
-                  <div className="bg-gradient-to-br from-[#3B9FD8] to-[#2A8AC0] rounded-2xl p-4 text-white mb-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                        <Bus className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] opacity-80">Sarah is on</p>
-                        <p className="text-sm font-semibold">Bus #42 - Route A</p>
-                      </div>
-                    </div>
-                    <div className="bg-white/20 rounded-xl p-3">
-                      <div className="flex justify-between text-xs mb-2">
-                        <span>ETA to School</span>
-                        <span className="font-semibold">12 mins</span>
-                      </div>
-                      <div className="w-full bg-white/30 rounded-full h-1.5">
-                        <div className="bg-white rounded-full h-1.5 w-3/4" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-green-50 rounded-xl p-3">
-                      <p className="text-[10px] text-gray-500">Boarded</p>
-                      <p className="text-sm font-semibold text-green-600">8:15 AM</p>
-                    </div>
-                    <div className="bg-blue-50 rounded-xl p-3">
-                      <p className="text-[10px] text-gray-500">Attendance</p>
-                      <p className="text-sm font-semibold text-blue-600">Present</p>
-                    </div>
-                  </div>
-
-                  {/* Schedule */}
-                  <div className="bg-gray-50 rounded-xl p-3">
-                    <p className="text-[10px] text-gray-500 mb-2">Today's Schedule</p>
-                    <div className="space-y-2">
-                      {["Mathematics • 9:00", "Science • 10:30", "English • 12:00"].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs text-gray-600">
-                          <span>{item.split(" • ")[0]}</span>
-                          <span className="text-gray-400">{item.split(" • ")[1]}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              <div className="flex items-center gap-8 mt-12 justify-center lg:justify-start">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-sm text-gray-500">Real-time Tracking</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-gray-500">Secure & Private</span>
                 </div>
               </div>
             </div>
 
-            {/* Floating Cards */}
-            <div className="absolute -top-4 -right-4 glass rounded-2xl p-4 animate-float-delayed">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-green-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Safe Arrival</p>
-                  <p className="text-xs text-gray-500">School Gate</p>
+            {/* Right - Journey Animation */}
+            <div className="relative">
+              <JourneyScene progress={scrollProgress} />
+              
+              {/* Floating Info Cards */}
+              <div className="absolute -top-4 -right-4 glass rounded-2xl p-4 animate-float z-20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-green-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Safe Arrival</p>
+                    <p className="text-xs text-gray-500">School Gate</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="absolute -bottom-4 -left-8 glass rounded-2xl p-4 animate-float">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#FFC107]/20 rounded-xl flex items-center justify-center">
-                  <Bell className="w-5 h-5 text-[#FFC107]" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">New Alert</p>
-                  <p className="text-xs text-gray-500">Exam Tomorrow</p>
+              <div className="absolute -bottom-4 -left-8 glass rounded-2xl p-4 animate-float-delayed z-20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#FFC107]/20 rounded-xl flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-[#FFC107]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Live Updates</p>
+                    <p className="text-xs text-gray-500">Every moment</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -291,8 +440,8 @@ const HeroSection = ({ onRequestDemo }) => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span className="text-sm text-gray-500">Scroll to explore</span>
+      <div className="absolute bottom-[55%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20">
+        <span className="text-sm text-gray-500">Scroll to see the journey</span>
         <ChevronDown className="w-5 h-5 text-gray-500 animate-bounce" />
       </div>
     </section>
@@ -304,9 +453,9 @@ const ProblemSection = () => {
   const [ref, isVisible] = useReveal();
 
   const problems = [
-    { icon: AlertTriangle, title: "Safety Concerns", desc: "Parents worry about child safety during travel", color: "text-red-400" },
-    { icon: Eye, title: "No Visibility", desc: "No real-time bus location information", color: "text-orange-400" },
-    { icon: Clock, title: "Time Wasted", desc: "Waiting at stops without knowing arrivals", color: "text-yellow-400" },
+    { icon: AlertTriangle, title: "Safety Concerns", desc: "Parents worry about child safety during travel", color: "text-red-400", bg: "bg-red-500/20" },
+    { icon: Eye, title: "No Visibility", desc: "No real-time bus location information", color: "text-orange-400", bg: "bg-orange-500/20" },
+    { icon: Clock, title: "Time Wasted", desc: "Waiting at stops without knowing arrivals", color: "text-yellow-400", bg: "bg-yellow-500/20" },
   ];
 
   return (
@@ -329,26 +478,28 @@ const ProblemSection = () => {
             {problems.map((item, i) => (
               <div 
                 key={i} 
-                className="glass rounded-3xl p-8 card-3d shine"
-                style={{ transitionDelay: `${i * 100}ms` }}
+                className="glass rounded-3xl p-10 card-3d shine group"
+                style={{ animationDelay: `${i * 150}ms` }}
                 data-testid={`problem-card-${i}`}
               >
-                <item.icon className={`w-12 h-12 ${item.color} mb-6`} />
+                <div className={`w-16 h-16 ${item.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <item.icon className={`w-8 h-8 ${item.color}`} />
+                </div>
                 <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                <p className="text-gray-400">{item.desc}</p>
+                <p className="text-gray-400 text-lg">{item.desc}</p>
               </div>
             ))}
           </div>
 
           {/* Stats */}
-          <div className="grid md:grid-cols-3 gap-8 mt-16 text-center">
+          <div className="grid md:grid-cols-3 gap-8 mt-20 text-center">
             {[
-              { num: "76%", text: "of parents worry daily" },
-              { num: "45 min", text: "average time wasted" },
-              { num: "89%", text: "use disconnected systems" },
+              { num: "76%", text: "of parents worry daily about school commute" },
+              { num: "45 min", text: "average time wasted at bus stops" },
+              { num: "89%", text: "schools use disconnected systems" },
             ].map((stat, i) => (
-              <div key={i}>
-                <p className="text-5xl font-bold gradient-text mb-2">{stat.num}</p>
+              <div key={i} className="p-6">
+                <p className="text-6xl font-bold gradient-text mb-3">{stat.num}</p>
                 <p className="text-gray-500">{stat.text}</p>
               </div>
             ))}
@@ -359,24 +510,24 @@ const ProblemSection = () => {
   );
 };
 
-// Features Section
+// Features Section with 3D Cards
 const FeaturesSection = () => {
   const [ref, isVisible] = useReveal();
 
   const features = [
-    { icon: MapPin, title: "Real-time Bus Tracking", desc: "Live GPS tracking with accurate ETAs", size: "large" },
-    { icon: UserCheck, title: "Student Verification", desc: "RFID scan-in/scan-out confirmation", size: "large" },
-    { icon: Smartphone, title: "Parent App", desc: "Track & receive alerts", size: "small" },
-    { icon: Car, title: "Driver App", desc: "Location & scanning", size: "small" },
-    { icon: ClipboardCheck, title: "Attendance", desc: "Auto-tracking", size: "small" },
-    { icon: Calendar, title: "Timetable", desc: "Schedule view", size: "small" },
-    { icon: FileText, title: "Exam & Marks", desc: "Academic results", size: "small" },
-    { icon: Bell, title: "Announcements", desc: "Push notifications", size: "small" },
+    { icon: MapPin, title: "Real-time Bus Tracking", desc: "Live GPS tracking with accurate ETAs and route visualization", size: "large", color: "from-blue-500 to-cyan-500" },
+    { icon: UserCheck, title: "Student Verification", desc: "RFID scan-in/scan-out confirmation for every boarding", size: "large", color: "from-green-500 to-emerald-500" },
+    { icon: Smartphone, title: "Parent App", desc: "Track & receive instant alerts", size: "small", color: "from-purple-500 to-pink-500" },
+    { icon: Car, title: "Driver App", desc: "Location sharing & scanning", size: "small", color: "from-orange-500 to-amber-500" },
+    { icon: ClipboardCheck, title: "Attendance", desc: "Automated daily tracking", size: "small", color: "from-indigo-500 to-blue-500" },
+    { icon: Calendar, title: "Timetable", desc: "Complete schedule view", size: "small", color: "from-pink-500 to-rose-500" },
+    { icon: FileText, title: "Exam & Marks", desc: "Academic results visibility", size: "small", color: "from-teal-500 to-cyan-500" },
+    { icon: Bell, title: "Announcements", desc: "Instant push notifications", size: "small", color: "from-yellow-500 to-orange-500" },
   ];
 
   return (
     <section id="features" className="py-32 relative" data-testid="features-section">
-      <div className="glow-orb w-[500px] h-[500px] bg-[#3B9FD8] top-1/2 left-[-250px]" />
+      <div className="glow-orb w-[600px] h-[600px] bg-[#3B9FD8] top-1/2 left-[-300px]" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div ref={ref} className={`reveal ${isVisible ? "visible" : ""}`}>
@@ -389,18 +540,25 @@ const FeaturesSection = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-5">
+          <div className="grid md:grid-cols-4 gap-6">
             {features.map((f, i) => (
               <div
                 key={i}
                 className={`glass rounded-3xl p-8 card-3d shine ${f.size === "large" ? "md:col-span-2 md:row-span-2" : ""}`}
                 data-testid={`feature-card-${i}`}
               >
-                <div className={`${f.size === "large" ? "w-16 h-16" : "w-12 h-12"} bg-[#3B9FD8]/20 rounded-2xl flex items-center justify-center mb-6`}>
-                  <f.icon className={`${f.size === "large" ? "w-8 h-8" : "w-6 h-6"} text-[#3B9FD8]`} />
+                <div className={`${f.size === "large" ? "w-20 h-20" : "w-14 h-14"} bg-gradient-to-br ${f.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg`}>
+                  <f.icon className={`${f.size === "large" ? "w-10 h-10" : "w-7 h-7"} text-white`} />
                 </div>
                 <h3 className={`${f.size === "large" ? "text-3xl" : "text-xl"} font-bold mb-3`}>{f.title}</h3>
-                <p className="text-gray-400">{f.desc}</p>
+                <p className={`text-gray-400 ${f.size === "large" ? "text-lg" : ""}`}>{f.desc}</p>
+                
+                {f.size === "large" && (
+                  <div className="mt-8 flex items-center gap-2 text-[#3B9FD8]">
+                    <span className="text-sm font-medium">Learn more</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -410,14 +568,14 @@ const FeaturesSection = () => {
   );
 };
 
-// How It Works Section
+// How It Works with 3D Steps
 const HowItWorksSection = () => {
   const [ref, isVisible] = useReveal();
 
   const steps = [
-    { num: "01", title: "School Setup", desc: "Configure buses, students, classes, and staff", icon: Building },
-    { num: "02", title: "Driver Tracking", desc: "Driver app sends live location & scans students", icon: Car },
-    { num: "03", title: "Parent Visibility", desc: "Parents see everything in real-time via mobile app", icon: Smartphone },
+    { num: "01", title: "School Setup", desc: "Configure buses, students, classes, and staff in minutes", icon: Building, color: "from-blue-500 to-indigo-500" },
+    { num: "02", title: "Driver Tracking", desc: "Driver app sends live location & scans students with RFID", icon: Car, color: "from-orange-500 to-amber-500" },
+    { num: "03", title: "Parent Visibility", desc: "Parents see everything in real-time via mobile app", icon: Smartphone, color: "from-green-500 to-emerald-500" },
   ];
 
   return (
@@ -435,17 +593,25 @@ const HowItWorksSection = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((step, i) => (
-              <div key={i} className="relative" data-testid={`step-${i}`}>
-                <div className="glass rounded-3xl p-10 text-center card-3d">
-                  <span className="text-6xl font-bold text-[#3B9FD8]/20 absolute top-6 right-8">{step.num}</span>
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#3B9FD8] to-[#2A8AC0] rounded-3xl flex items-center justify-center mx-auto mb-8 pulse-glow">
-                    <step.icon className="w-10 h-10 text-white" />
+              <div key={i} className="relative group" data-testid={`step-${i}`}>
+                <div className="glass rounded-3xl p-10 text-center card-3d relative overflow-hidden">
+                  {/* Background Number */}
+                  <span className="absolute text-[120px] font-bold text-white/5 top-0 right-4 leading-none">{step.num}</span>
+                  
+                  {/* Icon */}
+                  <div className={`w-24 h-24 bg-gradient-to-br ${step.color} rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl pulse-glow relative z-10 group-hover:scale-110 transition-transform duration-500`}>
+                    <step.icon className="w-12 h-12 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">{step.title}</h3>
-                  <p className="text-gray-400">{step.desc}</p>
+                  
+                  <h3 className="text-2xl font-bold mb-4 relative z-10">{step.title}</h3>
+                  <p className="text-gray-400 relative z-10">{step.desc}</p>
                 </div>
+                
+                {/* Connector Arrow */}
                 {i < 2 && (
-                  <ArrowRight className="hidden md:block absolute top-1/2 -right-6 w-8 h-8 text-[#3B9FD8] -translate-y-1/2" />
+                  <div className="hidden md:flex absolute top-1/2 -right-4 w-8 h-8 items-center justify-center z-20">
+                    <ArrowRight className="w-6 h-6 text-[#3B9FD8]" />
+                  </div>
                 )}
               </div>
             ))}
@@ -461,15 +627,15 @@ const BenefitsSection = () => {
   const [ref, isVisible] = useReveal();
 
   const benefits = [
-    { icon: Shield, title: "Increased Parent Trust", desc: "Build confidence with complete transparency" },
-    { icon: CheckCircle2, title: "Improved Student Safety", desc: "Real-time tracking ensures child security" },
-    { icon: Clock, title: "Reduced School Workload", desc: "Automated systems save administrative time" },
-    { icon: Users, title: "Fewer Complaints", desc: "Clear communication reduces transport issues" },
+    { icon: Heart, title: "Parent Peace of Mind", desc: "Complete transparency builds trust and reduces anxiety", color: "from-pink-500 to-rose-500" },
+    { icon: Shield, title: "Enhanced Safety", desc: "Real-time tracking ensures child security at all times", color: "from-green-500 to-emerald-500" },
+    { icon: Zap, title: "Reduced Workload", desc: "Automated systems save hours of administrative time", color: "from-yellow-500 to-orange-500" },
+    { icon: Target, title: "Fewer Complaints", desc: "Clear communication eliminates transport confusion", color: "from-blue-500 to-indigo-500" },
   ];
 
   return (
     <section id="benefits" className="py-32 relative" data-testid="benefits-section">
-      <div className="glow-orb w-[400px] h-[400px] bg-[#FFC107] bottom-0 right-[-200px]" />
+      <div className="glow-orb w-[500px] h-[500px] bg-[#FFC107] bottom-0 right-[-200px]" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div ref={ref} className={`reveal ${isVisible ? "visible" : ""}`}>
@@ -486,14 +652,14 @@ const BenefitsSection = () => {
             {benefits.map((b, i) => (
               <div 
                 key={i} 
-                className="glass rounded-3xl p-8 card-3d"
+                className="glass rounded-3xl p-8 card-3d group"
                 data-testid={`benefit-${i}`}
               >
-                <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center mb-6">
-                  <b.icon className="w-7 h-7 text-green-400" />
+                <div className={`w-16 h-16 bg-gradient-to-br ${b.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <b.icon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold mb-3">{b.title}</h3>
-                <p className="text-gray-400 text-sm">{b.desc}</p>
+                <p className="text-gray-400">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -503,15 +669,15 @@ const BenefitsSection = () => {
   );
 };
 
-// Who It's For Section
+// Who It's For
 const AudienceSection = () => {
   const [ref, isVisible] = useReveal();
 
   const audiences = [
-    { icon: GraduationCap, title: "Schools", desc: "Complete management solution" },
-    { icon: Users, title: "Parents", desc: "Peace of mind, always" },
-    { icon: Bus, title: "Transport Providers", desc: "Streamlined operations" },
-    { icon: Building, title: "Administrators", desc: "Full control & insights" },
+    { icon: GraduationCap, title: "Schools", desc: "Complete management solution for modern education" },
+    { icon: Users, title: "Parents", desc: "Peace of mind knowing your child is safe" },
+    { icon: Bus, title: "Transport Providers", desc: "Streamlined operations and accountability" },
+    { icon: Building, title: "Administrators", desc: "Full control, insights, and reporting" },
   ];
 
   return (
@@ -531,11 +697,11 @@ const AudienceSection = () => {
             {audiences.map((a, i) => (
               <div 
                 key={i}
-                className="glass rounded-3xl p-8 text-center hover:bg-white/10 transition-colors"
+                className="glass rounded-3xl p-8 text-center card-3d group"
                 data-testid={`audience-${i}`}
               >
-                <div className="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <a.icon className="w-8 h-8 text-purple-400" />
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <a.icon className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{a.title}</h3>
                 <p className="text-gray-400 text-sm">{a.desc}</p>
@@ -577,7 +743,7 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-32 relative" data-testid="contact-section">
-      <div className="glow-orb w-[500px] h-[500px] bg-[#3B9FD8] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      <div className="glow-orb w-[600px] h-[600px] bg-[#3B9FD8] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div ref={ref} className={`reveal ${isVisible ? "visible" : ""}`}>
@@ -586,7 +752,7 @@ const ContactSection = () => {
               Get Started
             </span>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              Book a <span className="gradient-text">Demo</span> for Your School
+              Book a <span className="gradient-text">Demo</span> Today
             </h2>
             <p className="text-xl text-gray-400">
               See how Where Is My Kid can transform your school's safety
@@ -601,7 +767,7 @@ const ContactSection = () => {
                   required
                   value={formData.school_name}
                   onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
-                  className="bg-white/5 border-white/10 h-12 rounded-xl"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
                   placeholder="Enter school name"
                   data-testid="input-school"
                 />
@@ -612,7 +778,7 @@ const ContactSection = () => {
                   required
                   value={formData.contact_person}
                   onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
-                  className="bg-white/5 border-white/10 h-12 rounded-xl"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
                   placeholder="Your name"
                   data-testid="input-person"
                 />
@@ -624,7 +790,7 @@ const ContactSection = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-white/5 border-white/10 h-12 rounded-xl"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
                   placeholder="email@school.com"
                   data-testid="input-email"
                 />
@@ -635,7 +801,7 @@ const ContactSection = () => {
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="bg-white/5 border-white/10 h-12 rounded-xl"
+                  className="bg-white/5 border-white/10 h-14 rounded-xl text-lg"
                   placeholder="+91 XXXXX XXXXX"
                   data-testid="input-phone"
                 />
@@ -646,7 +812,7 @@ const ContactSection = () => {
               <Textarea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="bg-white/5 border-white/10 rounded-xl min-h-[120px]"
+                className="bg-white/5 border-white/10 rounded-xl min-h-[140px] text-lg"
                 placeholder="Tell us about your school's needs..."
                 data-testid="input-message"
               />
@@ -654,7 +820,7 @@ const ContactSection = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full btn-primary h-14 text-lg"
+              className="w-full btn-primary h-16 text-lg font-semibold"
               data-testid="submit-btn"
             >
               {isSubmitting ? "Sending..." : "Request Demo"}
@@ -662,11 +828,11 @@ const ContactSection = () => {
           </form>
 
           <div className="flex flex-wrap justify-center gap-8 mt-12 text-gray-400">
-            <a href="tel:+911234567890" className="flex items-center gap-2 hover:text-white transition-colors">
-              <Phone className="w-5 h-5" /> +91 123 456 7890
+            <a href="tel:+919959460695" className="flex items-center gap-2 hover:text-white transition-colors text-lg">
+              <Phone className="w-5 h-5" /> +91 9959460695
             </a>
-            <a href="mailto:hello@whereismykid.com" className="flex items-center gap-2 hover:text-white transition-colors">
-              <Mail className="w-5 h-5" /> hello@whereismykid.com
+            <a href="mailto:ajaychowdaryshaganti@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors text-lg">
+              <Mail className="w-5 h-5" /> ajaychowdaryshaganti@gmail.com
             </a>
           </div>
         </div>
@@ -682,12 +848,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_parentpeace/artifacts/vd59z55h_wimk.png" 
-              alt="Where Is My Kid" 
-              className="h-10 w-auto"
-            />
-            <span className="font-bold">Where Is My Kid</span>
+            <img src={LOGO_URL} alt="Where Is My Kid" className="h-12 w-auto" />
+            <span className="font-bold text-xl">Where Is My Kid</span>
           </div>
           
           <p className="text-gray-500 text-center">
@@ -732,60 +894,52 @@ const DemoModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111] border-white/10 max-w-lg" data-testid="demo-modal" aria-describedby="demo-description">
+      <DialogContent className="bg-[#111] border-white/10 max-w-lg" data-testid="demo-modal" aria-describedby="demo-modal-desc">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             Request a <span className="gradient-text">Demo</span>
           </DialogTitle>
-          <p id="demo-description" className="sr-only">Fill out the form to request a demo for your school</p>
+          <p id="demo-modal-desc" className="sr-only">Fill out the form to request a demo</p>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              required
-              value={formData.school_name}
-              onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
-              className="bg-white/5 border-white/10 h-12 rounded-xl"
-              placeholder="School Name *"
-              data-testid="modal-school"
-            />
-          </div>
-          <div>
-            <Input
-              required
-              value={formData.contact_person}
-              onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
-              className="bg-white/5 border-white/10 h-12 rounded-xl"
-              placeholder="Your Name *"
-              data-testid="modal-person"
-            />
-          </div>
-          <div>
-            <Input
-              required
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="bg-white/5 border-white/10 h-12 rounded-xl"
-              placeholder="Email *"
-              data-testid="modal-email"
-            />
-          </div>
-          <div>
-            <Input
-              required
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="bg-white/5 border-white/10 h-12 rounded-xl"
-              placeholder="Phone *"
-              data-testid="modal-phone"
-            />
-          </div>
+          <Input
+            required
+            value={formData.school_name}
+            onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
+            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            placeholder="School Name *"
+            data-testid="modal-school"
+          />
+          <Input
+            required
+            value={formData.contact_person}
+            onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
+            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            placeholder="Your Name *"
+            data-testid="modal-person"
+          />
+          <Input
+            required
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            placeholder="Email *"
+            data-testid="modal-email"
+          />
+          <Input
+            required
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            className="bg-white/5 border-white/10 h-14 rounded-xl"
+            placeholder="Phone *"
+            data-testid="modal-phone"
+          />
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full btn-primary h-12"
+            className="w-full btn-primary h-14"
             data-testid="modal-submit"
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
@@ -796,14 +950,15 @@ const DemoModal = ({ isOpen, onClose }) => {
   );
 };
 
-// Main Landing Page Component
+// Main Landing Page
 export default function LandingPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const scrollProgress = useScrollProgress();
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden" data-testid="landing-page">
       <Navbar onRequestDemo={() => setIsDemoModalOpen(true)} />
-      <HeroSection onRequestDemo={() => setIsDemoModalOpen(true)} />
+      <HeroSection onRequestDemo={() => setIsDemoModalOpen(true)} scrollProgress={scrollProgress} />
       <ProblemSection />
       <FeaturesSection />
       <HowItWorksSection />
