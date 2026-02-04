@@ -363,10 +363,10 @@ const Navbar = ({ onRequestDemo }) => {
   );
 };
 
-// Hero Section with Journey Animation
+// Hero Section with Scroll-based Journey Animation
 const HeroSection = ({ onRequestDemo, scrollProgress }) => {
   return (
-    <section className="relative min-h-screen pt-20 overflow-hidden" data-testid="hero-section">
+    <section className="relative pt-20 overflow-hidden" data-testid="hero-section">
       {/* Background */}
       <div className="absolute inset-0 grid-pattern" />
       <div className="glow-orb w-[800px] h-[800px] bg-[#3B9FD8] top-[-300px] right-[-300px]" />
