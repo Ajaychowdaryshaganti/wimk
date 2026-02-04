@@ -104,59 +104,26 @@ body {
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .card-3d:hover {
-  transform: perspective(1000px) rotateY(-5deg) rotateX(5deg) translateZ(30px);
-}
-
-/* Deep 3D Effect */
-.deep-3d {
-  transform-style: preserve-3d;
-  perspective: 2000px;
-}
-
-.deep-3d-child {
-  transform: translateZ(50px);
-  transition: transform 0.5s ease;
-}
-
-.deep-3d:hover .deep-3d-child {
-  transform: translateZ(100px);
+  transform: perspective(1000px) rotateY(-5deg) rotateX(5deg) translateZ(20px);
 }
 
 /* Floating Animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
 }
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
-
-/* Twinkle Stars */
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-
-/* Wave Animation for Kid */
-@keyframes wave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-30deg); }
-  75% { transform: rotate(20deg); }
-}
-.animate-wave {
-  animation: wave 0.5s ease-in-out infinite;
-}
-
-/* Flag Wave */
-@keyframes flagWave {
-  0%, 100% { transform: scaleX(1); }
-  50% { transform: scaleX(0.9); }
+.animate-float-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
 }
 
 /* Pulse Glow */
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 20px rgba(59, 159, 216, 0.3); }
-  50% { box-shadow: 0 0 60px rgba(59, 159, 216, 0.6); }
+  50% { box-shadow: 0 0 40px rgba(59, 159, 216, 0.6); }
 }
 .pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
@@ -210,24 +177,6 @@ body {
   margin: 0 auto;
 }
 
-/* Road Animation */
-@keyframes road-move {
-  from { background-position: 0 0; }
-  to { background-position: -100px 0; }
-}
-.road-animate {
-  animation: road-move 0.5s linear infinite;
-}
-
-/* Stars Twinkling */
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-.star {
-  animation: twinkle 2s ease-in-out infinite;
-}
-
 /* Reveal Animation */
 .reveal {
   opacity: 0;
@@ -250,7 +199,7 @@ body {
   box-shadow: 0 10px 30px -10px rgba(59, 159, 216, 0.5);
 }
 .btn-primary:hover {
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-3px);
   box-shadow: 0 20px 40px -15px rgba(59, 159, 216, 0.6);
 }
 
@@ -266,59 +215,21 @@ body {
 .btn-secondary:hover {
   background: rgba(255,255,255,0.1);
   border-color: rgba(255,255,255,0.5);
-  transform: translateY(-2px);
 }
 
 /* Grid Pattern */
 .grid-pattern {
   background-image: 
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 80px 80px;
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 /* Glow Orbs */
 .glow-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.4;
+  filter: blur(80px);
+  opacity: 0.5;
   pointer-events: none;
-}
-
-/* Parallax Container */
-.parallax-container {
-  perspective: 1000px;
-  transform-style: preserve-3d;
-}
-
-/* 3D Tilt on scroll */
-.tilt-3d {
-  transition: transform 0.3s ease;
-}
-
-/* Journey Path */
-.journey-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  transition: stroke-dashoffset 0.5s ease;
-}
-
-/* Cloud Float */
-@keyframes cloud-float {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(20px); }
-}
-.cloud-float {
-  animation: cloud-float 8s ease-in-out infinite;
-}
-
-/* Bounce In */
-@keyframes bounce-in {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
-}
-.bounce-in {
-  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
