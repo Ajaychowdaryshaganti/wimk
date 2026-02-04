@@ -40,23 +40,6 @@ const useReveal = () => {
   return [ref, isVisible];
 };
 
-// Scroll Progress Hook
-const useScrollProgress = () => {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(Math.min(scrollTop / docHeight, 1));
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return progress;
-};
-
 // SVG Bus Component
 const AnimatedBus = ({ className = "", isMoving = false }) => (
   <svg viewBox="0 0 120 60" className={className}>
