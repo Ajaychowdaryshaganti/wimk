@@ -732,11 +732,12 @@ const DemoModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111] border-white/10 max-w-lg" data-testid="demo-modal">
+      <DialogContent className="bg-[#111] border-white/10 max-w-lg" data-testid="demo-modal" aria-describedby="demo-description">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             Request a <span className="gradient-text">Demo</span>
           </DialogTitle>
+          <p id="demo-description" className="sr-only">Fill out the form to request a demo for your school</p>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
