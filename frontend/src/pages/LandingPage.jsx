@@ -964,6 +964,7 @@ const DemoModal = ({ isOpen, onClose }) => {
 // Main Landing Page
 export default function LandingPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const scrollProgress = useScrollProgress();
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden" data-testid="landing-page">
