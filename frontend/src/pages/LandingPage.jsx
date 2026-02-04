@@ -228,10 +228,9 @@ const JourneyScene = ({ scrollProgress }) => {
 
       {/* Bus */}
       <div 
-        className={`absolute bottom-16 transition-all duration-1000 ease-out ${busMoving ? "bus-bounce" : ""}`}
+        className={`absolute bottom-16 transition-all duration-300 ease-out ${busMoving ? "bus-bounce" : ""}`}
         style={{ 
           left: `${5 + busPosition}%`,
-          transform: `scaleX(${animationProgress > 0.1 ? 1 : -1})`,
         }}
       >
         <AnimatedBus className="w-32 h-16" isMoving={busMoving} />
