@@ -263,29 +263,35 @@ const StoryOverlay = ({ scrollProgress }) => {
   );
 };
 
+// Single Progress Dot Component
+const ProgressDot = ({ scrollProgress, stageProgress }) => {
+  const bgColor = useTransform(
+    scrollProgress,
+    [stageProgress - 0.05, stageProgress],
+    ["rgba(255,255,255,0.2)", "#3B9FD8"]
+  );
+  
+  return (
+    <motion.div
+      className="w-3 h-3 rounded-full border-2 border-white/50"
+      style={{ backgroundColor: bgColor }}
+    />
+  );
+};
+
 // Progress Indicator
 const ProgressIndicator = ({ scrollProgress }) => {
-  const progress = useTransform(scrollProgress, [0, 1], [0, 100]);
+  const progressHeight = useTransform(scrollProgress, [0, 1], ["0%", "100%"]);
   
   return (
     <div className="fixed right-4 sm:right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-2">
       {STAGES.map((stage, i) => (
-        <motion.div
-          key={i}
-          className="w-3 h-3 rounded-full border-2 border-white/50"
-          style={{
-            backgroundColor: useTransform(
-              scrollProgress,
-              [stage.progress - 0.05, stage.progress],
-              ["rgba(255,255,255,0.2)", "#3B9FD8"]
-            )
-          }}
-        />
+        <ProgressDot key={i} scrollProgress={scrollProgress} stageProgress={stage.progress} />
       ))}
       <div className="mt-2 w-1 h-20 bg-white/20 rounded-full overflow-hidden">
         <motion.div 
           className="w-full bg-gradient-to-b from-blue-400 to-green-400 rounded-full"
-          style={{ height: useTransform(progress, v => `${v}%`) }}
+          style={{ height: progressHeight }}
         />
       </div>
     </div>
